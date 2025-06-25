@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3mx2qt1c3csl"]
+
+[ext_resource type="PackedScene" uid="uid://bns28t0gr2rcs" path="res://assets/cottage_interior.blend" id="1_ba8ip"]
+
+[node name="cottage_interior" instance=ExtResource("1_ba8ip")]
