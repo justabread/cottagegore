@@ -9,7 +9,7 @@ var speed: float
 @export var JUMP_VELOCITY = 4.5
 
 @export_group('Mouse')
-@export var MOUSE_SENSITIVITY = 0.003
+@export var MOUSE_SENSITIVITY = 0.1
 @export_range(-180.0, 180.0) var MOUSE_LOOK_X_MIN: float = -90;
 @export_range(-180.0, 180.0) var MOUSE_LOOK_X_MAX: float = 90;
 
@@ -20,18 +20,31 @@ var t_bob: float = 0.0
 
 @onready var head: Node3D = $head
 @onready var camera_3d: Camera3D = $head/Camera3D
-@onready var mesh_instance_3d: MeshInstance3D = $MeshInstance3D
+
+var mouseInput : Vector2 = Vector2(0,0)
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("EVENT_QUIT"):
+		get_tree().quit()
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		head.rotate_y(-event.relative.x * MOUSE_SENSITIVITY)
-		camera_3d.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
-		camera_3d.rotation.x = clamp(camera_3d.rotation.x, deg_to_rad(MOUSE_LOOK_X_MIN), deg_to_rad(MOUSE_LOOK_X_MAX))
+		mouseInput.x += event.relative.x
+		mouseInput.y += event.relative.y
 
 func _physics_process(delta: float) -> void:
+	HandleMovement(delta)
+	HandleHeadRotation()
+	
+	t_bob += delta * velocity.length() * float(is_on_floor())
+	camera_3d.transform.origin = HandleHeadBob(t_bob)
+
+	move_and_slide()
+
+func HandleMovement(delta: float):
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -58,13 +71,15 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = lerp(velocity.x, direction.x * speed, delta * 2.0)
 		velocity.z = lerp(velocity.z, direction.z * speed, delta * 2.0)
-		
-	t_bob += delta * velocity.length() * float(is_on_floor())
-	camera_3d.transform.origin = HeadBob(t_bob)
 
-	move_and_slide()
+func HandleHeadRotation():
+	head.rotation_degrees.y -= mouseInput.x * MOUSE_SENSITIVITY
+	camera_3d.rotation_degrees.x -= mouseInput.y * MOUSE_SENSITIVITY
+	
+	mouseInput = Vector2(0,0)
+	camera_3d.rotation.x = clamp(camera_3d.rotation.x, deg_to_rad(MOUSE_LOOK_X_MIN), deg_to_rad(MOUSE_LOOK_X_MAX))
 
-func HeadBob(time: float):
+func HandleHeadBob(time: float):
 	var pos = Vector3.ZERO
 	pos.y = sin(time * bob_frequency) * bob_amplitude
 	pos.x = cos(time * bob_frequency / 2) * bob_amplitude
