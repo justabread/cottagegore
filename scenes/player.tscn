@@ -22,18 +22,27 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.396484)
 fov = 65.0
 
 [node name="hands" type="Node3D" parent="head/Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.554951, -1.19432)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.555, -1)
 
-[node name="handRight" type="Node3D" parent="head/Camera3D/hands"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.26042, 0.240591, 0.652386)
+[node name="armRight" type="SpringArm3D" parent="head/Camera3D/hands"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.26, 0.241, 0.852043)
 
-[node name="handMesh" type="MeshInstance3D" parent="head/Camera3D/hands/handRight"]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.5, 0, 0, 0)
+[node name="muzzleOrigin" type="Node3D" parent="head/Camera3D/hands/armRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.96046e-08, 0, 0.344794)
+
+[node name="weaponMesh" type="MeshInstance3D" parent="head/Camera3D/hands/armRight/muzzleOrigin"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.5, 0, 0, -0.370447)
 mesh = SubResource("BoxMesh_3vyb7")
+skeleton = NodePath("../..")
 
-[node name="handLeft" type="Node3D" parent="head/Camera3D/hands"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.414603, 0.211843, 0.54577)
+[node name="armLeft" type="SpringArm3D" parent="head/Camera3D/hands"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -0.415, 0.241, 0.852)
+spring_length = 0.8
 
-[node name="handMesh" type="MeshInstance3D" parent="head/Camera3D/hands/handLeft"]
-transform = Transform3D(0.15, 0, 0, 0, 0.2, 0, 0, 0, 0.05, 0, 0, 0)
+[node name="accOrigin" type="Node3D" parent="head/Camera3D/hands/armLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0637634)
+
+[node name="accessory" type="MeshInstance3D" parent="head/Camera3D/hands/armLeft/accOrigin"]
+transform = Transform3D(0.15, 0, 0, 0, 0.2, 0, 0, 0, 0.05, 0, 0, -0.2)
 mesh = SubResource("BoxMesh_3vyb7")
+skeleton = NodePath("../..")
