@@ -3,6 +3,3 @@
 [ext_resource type="PackedScene" uid="uid://bns28t0gr2rcs" path="res://assets/cottage_interior.blend" id="1_ba8ip"]
 
 [node name="cottage_interior" instance=ExtResource("1_ba8ip")]
-
-[node name="collision" parent="." index="1"]
-collision_layer = 3
